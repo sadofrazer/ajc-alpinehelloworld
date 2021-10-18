@@ -7,6 +7,7 @@ pipeline{
         STAGING = "frazer-ajc-staging"
         PRODUCTION = "frazer-ajc-production"
         USERNAME = "sadofrazer"
+        PRODUCTION_HOST = "3.90.164.46"
 
     }
 
@@ -105,6 +106,24 @@ pipeline{
                        heroku container:push -a ${PRODUCTION} web
                        heroku container:release -a ${PRODUCTION} web
                     '''
+                }
+            }
+        }
+
+        stage('Deploy app on EC2-cloud Production') {
+            agent any
+            when{
+                expression{ GIT_BRANCH == 'origin/master'}
+            }
+            steps{
+                withCredentials([sshUserPrivateKey(credentialsId: "ssh-ec2-cloud", keyFileVariable: 'keyfile', usernameVariable: 'NUSER')]) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        script{ 
+                            sh'''
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${PRODUCTION_HOST} -C \'docker run -d --name static-webapp-prod -p 80:80 sadofrazer/alpinehelloworld\'
+                            '''
+                        }
+                    }
                 }
             }
         }
