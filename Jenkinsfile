@@ -6,6 +6,7 @@ pipeline{
         CONTAINER_NAME = "alpinehelloworld"
         STAGING = "frazer-ajc-staging"
         PRODUCTION = "frazer-ajc-production"
+        USERNAME = "sadofrazer"
 
     }
 
@@ -52,6 +53,17 @@ pipeline{
                     sh '''
                        docker stop ${CONTAINER_NAME}
                        docker rm ${CONTAINER_NAME}
+                    '''
+                }
+            }
+        }
+        stage('Pus image to Dockerhub') {
+            agent any
+            steps {
+                script {
+                    sh '''
+                       docker login -u ${USERNAME} -p ${PASSWORD}
+                       docker push ${IMAGE_NAME}:${IMAGE_TAG}
                     '''
                 }
             }
