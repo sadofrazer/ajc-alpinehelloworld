@@ -4,8 +4,8 @@ pipeline{
         IMAGE_NAME = "sadofrazer/alpinehelloworld"
         IMAGE_TAG = "${BUILD_TAG}"
         CONTAINER_NAME = "alpinehelloworld"
-        STAGING = "ajc-staging"
-        PRODUCTION = "ajc-production"
+        STAGING = "frazer-ajc-staging"
+        PRODUCTION = "frazer-ajc-production"
 
     }
 
